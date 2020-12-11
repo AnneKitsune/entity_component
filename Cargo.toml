@@ -1,0 +1,28 @@
+[package]
+name = "entity_component"
+version = "0.1.0"
+authors = ["Joël Lupien (Jojolepro) <jojolepro@jojolepro.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+default = ["keysize16"]
+
+# Allows for 2^16 entities
+keysize16 = []
+# Allows for 2^20 entities
+keysize20 = []
+# Allows for 2^24 entities
+keysize24 = []
+# Allows for 2^32 entities
+keysize32 = []
+
+ser = ["serde"]
+
+[dependencies]
+bitset-core = "0.1.0"
+itertools = "0.9.0"
+paste = "1.0.1"
+serde = { version = "1.0", features = ["derive"], optional = true}
+
