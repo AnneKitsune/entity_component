@@ -104,8 +104,7 @@ macro_rules! iter_bitset {
 /// components should or should not be matched.
 /// Here is an example:
 /// ```rust,ignore
-/// let mut _bitset = vec![];
-/// let iter = join!(_bitset, &storage1 && (&mut storage2 || &mut storage3) && !&storage4);
+/// let iter = join!(&storage1 && &mut storage2 || &mut storage3 && !&storage4);
 /// ```
 ///
 /// Here, we first provide a bitset. This is due to a limitation with rust
@@ -121,7 +120,7 @@ macro_rules! iter_bitset {
 ///
 /// Finally, we can iterate:
 /// ```rust,ignore
-/// iter.for_each(|(component1, mut component2, mut component3, component4)| {});
+/// iter.for_each(|(component1, mut component2, mut component3, _)| {});
 /// ```
 /// This iterator will be of type `(Option<&T1>, Option<&mut T2>, ...)`.
 #[macro_export]
