@@ -1,5 +1,3 @@
-#![feature(const_int_pow)]
-
 #[cfg(feature = "ser")]
 #[macro_use]
 extern crate serde;
