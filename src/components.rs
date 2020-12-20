@@ -89,7 +89,6 @@ impl<T> Components<T> {
     /// Iterates immutably over the components of this type where `bitset`
     /// indicates the indices of entities.
     /// Slower than `iter()` but allows joining between multiple component types.
-    //pub fn iter_with_bitset<'a>(&'a self, bitset: &'a BitSetVec) -> ComponentIterator<'a, T> {
     pub fn iter_with_bitset<'a>(&'a self, bitset: std::rc::Rc<BitSetVec>) -> ComponentIterator<'a, T> {
         ComponentIterator {
             current_id: 0,
@@ -103,7 +102,6 @@ impl<T> Components<T> {
     /// Slower than `iter()` but allows joining between multiple component types.
     pub fn iter_mut_with_bitset<'a>(
         &'a mut self,
-        //bitset: &'a BitSetVec,
         bitset: std::rc::Rc<BitSetVec>,
     ) -> ComponentIteratorMut<'a, T> {
         ComponentIteratorMut {
@@ -126,3 +124,26 @@ impl<T> Components<T> {
         &self.bitset
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::*;
+    #[test]
+    fn create_remove_components() {
+        #[derive(Debug, Clone, PartialEq, Eq)]
+        struct A;
+
+        let mut entities = Entities::default();
+        let e1 = entities.create();
+        let e2 = entities.create();
+        
+        let mut storage = Components::<A>::default();
+        storage.insert(e1, A);
+        storage.insert(e2, A);
+        assert!(storage.get(e1).is_some());
+        storage.remove(e1);
+        assert!(storage.get(e1).is_none());
+        assert_eq!(storage.iter().cloned().collect::<Vec<_>>(), vec![A])
+    }
+}
+

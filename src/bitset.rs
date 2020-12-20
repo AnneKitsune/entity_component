@@ -18,7 +18,7 @@ pub(crate) const BITSET_SLICE_COUNT: usize = BITSET_SIZE / (32 * 8 / 8);
 pub(crate) type BitSetVec = Vec<[u32; 8]>;
 
 /// Creates a bitset big enough to contain the index of each entity.
-/// Mostly used to create caches or to be used with `join!`.
+/// Mostly used to create caches.
 pub fn create_bitset() -> BitSetVec {
     vec![[0u32; 8]; BITSET_SLICE_COUNT]
 }

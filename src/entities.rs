@@ -87,7 +87,6 @@ impl Entities {
         &self.alive
     }
     /// Iterates over entities using the provided bitset.
-    //pub fn iter_with_bitset<'a>(&'a self, bitset: &'a BitSetVec) -> EntityIterator<'a> {
     pub fn iter_with_bitset<'a>(&'a self, bitset: std::rc::Rc<BitSetVec>) -> EntityIterator<'a> {
         EntityIterator {
             current_id: 0,
@@ -98,3 +97,36 @@ impl Entities {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::*;
+    #[test]
+    fn create_kill_entities() {
+        let mut entities = Entities::default();
+        let e1 = entities.create();
+        let e2 = entities.create();
+        let e3 = entities.create();
+        assert_eq!(e1.index(), 0);
+        assert_eq!(e2.index(), 1);
+        assert_eq!(e3.index(), 2);
+        assert_eq!(e1.generation(), 0);
+        assert!(entities.is_alive(e1));
+        assert!(entities.is_alive(e2));
+        assert!(entities.is_alive(e3));
+        entities.kill(e1);
+        assert!(!entities.is_alive(e1));
+        assert!(entities.is_alive(e2));
+        assert!(entities.is_alive(e3));
+        let e4 = entities.create();
+        assert!(!entities.is_alive(e1));
+        assert!(entities.is_alive(e2));
+        assert!(entities.is_alive(e3));
+        assert!(entities.is_alive(e4));
+
+        assert_eq!(*entities.killed(), vec![e1]);
+        entities.clear_killed();
+        assert_eq!(*entities.killed(), vec![]);
+    }
+}
+
