@@ -8,7 +8,6 @@ pub struct ComponentIterator<'a, T> {
     pub(crate) current_id: usize,
     pub(crate) max_id: usize,
     pub(crate) storage: &'a Vec<Option<T>>,
-    //pub(crate) bitset: &'a BitSetVec,
     pub(crate) bitset: std::rc::Rc<BitSetVec>,
 }
 
@@ -35,9 +34,9 @@ pub struct ComponentIteratorMut<'a, T> {
     pub(crate) current_id: usize,
     pub(crate) max_id: usize,
     pub(crate) storage: &'a mut Vec<Option<T>>,
-    //pub(crate) bitset: &'a BitSetVec,
     pub(crate) bitset: std::rc::Rc<BitSetVec>,
 }
+
 impl<'a, T> Iterator for ComponentIteratorMut<'a, T> {
     type Item = Option<&'a mut T>;
     fn next(&mut self) -> Option<Self::Item> {

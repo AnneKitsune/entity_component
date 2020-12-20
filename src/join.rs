@@ -11,7 +11,9 @@ macro_rules! gen_bitset {
         gen_bitset!($bitset; $($tail)*);
     };
     ($bitset:ident; !&$st:ident $($tail:tt)*) => {
-        *std::rc::Rc::get_mut(&mut $bitset).unwrap() = $st.bitset().clone(); $bitset.bit_not();
+        let mut cloned = $st.bitset().clone();
+        cloned.bit_not();
+        *std::rc::Rc::get_mut(&mut $bitset).unwrap() = cloned;
         gen_bitset!($bitset; $($tail)*);
     };
     ($bitset:ident; && &mut $st:ident $($tail:tt)*) => {
@@ -20,7 +22,6 @@ macro_rules! gen_bitset {
     };
     ($bitset:ident; && &$st:ident $($tail:tt)*) => {
         std::rc::Rc::get_mut(&mut $bitset).unwrap().bit_and($st.bitset());
-        //$bitset.bit_and($st.bitset());
         gen_bitset!($bitset; $($tail)*);
     };
     ($bitset:ident; && !&$st:ident $($tail:tt)*) => {
@@ -85,10 +86,6 @@ macro_rules! iter_bitset {
     };*/
 }
 
-// TODO find a way to declare the bitset internally and then return
-// the iterator without breaking everything.
-// Could paste! be used to leak the type into the global scope?
-
 /// The join macro makes it very easy to iterate over multiple
 /// components of the same `Entity` at once.
 ///
@@ -131,14 +128,11 @@ macro_rules! join {
     (&mut $st:ident) => {
         $st.iter_mut()
     };
-    //($bitset:ident, $($complex:tt)*) => {
     ($($complex:tt)*) => {
         {
-            // TODO delete unused alloc since we clone as a first step
+            // TODO find a way to avoid having this first vec allocation.
             let mut bitset = std::rc::Rc::new(vec![]);
-            //gen_bitset!($bitset; $($complex)*);
             gen_bitset!(bitset; $($complex)*);
-            //let iter = iter_bitset!($bitset ; ; $($complex)*);
             let iter = iter_bitset!(bitset ; ; $($complex)*);
             iter
         }
@@ -154,8 +148,6 @@ mod tests {
         struct B;
         let comp1 = Components::<A>::default();
         let comp2 = Components::<B>::default();
-        //let mut bitset = create_bitset();
-        //join!(bitset, &comp1 && &comp2).for_each(|_| {});
         join!(&comp1 && &comp2).for_each(|_| {});
     }
 
@@ -172,6 +164,15 @@ mod tests {
             count += 1;
         });
         assert_eq!(count, 0);
+    }
+
+    #[test]
+    fn start_with_not() {
+        struct A;
+        struct B;
+        let comp1 = Components::<A>::default();
+        let comp2 = Components::<B>::default();
+        join!(!&comp1 && &comp2).for_each(|_| {});
     }
 }
 
