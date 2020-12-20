@@ -4,7 +4,7 @@ The entity-component part of a full ECS (Entity-Component-System).
 # Usage
 Add the following to you Cargo.toml file:
 ```
-entity_component = "1.0.0"
+entity_component = "0.99.0"
 ```
 
 Use it like so:
