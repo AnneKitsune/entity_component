@@ -3,8 +3,12 @@ name = "entity_component"
 version = "0.99.0"
 authors = ["Joël Lupien (Jojolepro) <jojolepro@jojolepro.com>"]
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+description = "Provides the Entity and Component part of a full ECS."
+keywords = ["game", "ecs"]
+categories = ["game-engines"]
+license = "AGPL-3.0-only"
+exclude = ["doc"]
+repository = "https://git.jojolepro.com/entity_component/"
 
 [features]
 default = ["keysize16"]
