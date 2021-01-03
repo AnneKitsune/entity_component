@@ -15,7 +15,9 @@ const BITSET_EXP: u32 = 32;
 pub(crate) const BITSET_SIZE: usize = 2usize.saturating_pow(BITSET_EXP);
 pub(crate) const BITSET_SLICE_COUNT: usize = BITSET_SIZE / (32 * 8 / 8);
 
-pub(crate) type BitSetVec = Vec<[u32; 8]>;
+/// The type of bitsets used to track entities in component storages.
+/// Mostly used to create caches.
+pub type BitSetVec = Vec<[u32; 8]>;
 
 /// Creates a bitset big enough to contain the index of each entity.
 /// Mostly used to create caches.

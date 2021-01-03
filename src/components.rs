@@ -1,5 +1,15 @@
 use crate::{create_bitset, Entity, BitSetVec, BitSet, ComponentIterator, ComponentIteratorMut, BITSET_SIZE};
 
+use std::collections::HashMap;
+use std::any::{TypeId, Any};
+use std::sync::Mutex;
+use std::cell::RefMut;
+
+lazy_static::lazy_static! {
+    #[doc(hidden)]
+    pub static ref COMPONENT_REGISTRY: Mutex<HashMap<TypeId, Box<dyn Fn(RefMut<dyn Any+'static>, &[Entity]) + Send + Sync>>> = Mutex::new(HashMap::default());
+}
+
 /// Holds components of a given type indexed by `Entity`.
 /// We do not check if the given entity is alive here, this should be done using
 /// `Entities`.
@@ -8,8 +18,17 @@ pub struct Components<T> {
     components: Vec<Option<T>>,
 }
 
-impl<T> Default for Components<T> {
+impl<T: 'static> Default for Components<T> {
     fn default() -> Self {
+        // Registers all the component downcasting and cleaning code in one globally accessible
+        // place. This seems to be the best way of doing it that doesn't involve
+        // heavily modifying how the `world_dispatcher` crate works.
+        COMPONENT_REGISTRY.lock().unwrap().insert(TypeId::of::<Self>(), Box::new(|any, entities| {
+            let mut me = RefMut::map(any, |j| j.downcast_mut::<Self>().unwrap());
+            for e in entities {
+                me.remove(*e);
+            }
+        }));
         Self {
             bitset: create_bitset(),
             // Approximation of a good default.

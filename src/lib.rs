@@ -5,8 +5,6 @@ extern crate serde;
 pub use bitset_core::BitSet;
 #[doc(hidden)]
 pub use itertools::izip;
-#[doc(hidden)]
-pub use paste::paste;
 
 mod bitset;
 mod component_iterator;
