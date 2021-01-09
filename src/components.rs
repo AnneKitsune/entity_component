@@ -81,7 +81,7 @@ impl<T> Components<T> {
             None
         }
     }
-    /// Removes the component for of `Entity`.
+    /// Removes the component of `Entity`.
     /// Returns `Some(T)` if the entity did have the component.
     /// Returns `None` if the entity did not have the component.
     pub fn remove(&mut self, entity: Entity) -> Option<T> {
