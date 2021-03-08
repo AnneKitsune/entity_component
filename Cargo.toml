@@ -1,6 +1,6 @@
 [package]
 name = "entity_component"
-version = "0.100.0"
+version = "1.0.0"
 authors = ["Joël Lupien (Jojolepro) <jojolepro@jojolepro.com>"]
 edition = "2018"
 description = "Provides the Entity and Component part of a full ECS."
