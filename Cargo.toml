@@ -1,14 +1,14 @@
 [package]
 name = "entity_component"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["Joël Lupien (Jojolepro) <jojolepro@jojolepro.com>"]
 edition = "2018"
 description = "Provides the Entity and Component part of a full ECS."
 keywords = ["game", "ecs"]
 categories = ["game-engines"]
-license = "AGPL-3.0-only"
+license = "CC0-1.0"
 exclude = ["doc"]
-repository = "https://git.jojolepro.com/entity_component/"
+repository = "https://github.com/jojolepro/entity_component/"
 
 [features]
 default = ["keysize16"]
