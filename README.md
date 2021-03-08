@@ -1,10 +1,18 @@
 # Entity Component
 The entity-component part of a full ECS (Entity-Component-System).
 
+# Why would you use this ECS library?
+
+* Compatible with all platforms, including WASM!
+* Public domain licensing: CC0
+* Minimal amount of dependencies.
+* Small code size.
+* Stable, tested, benchmarked, 100% completed.
+
 # Usage
 Add the following to you Cargo.toml file:
 ```
-entity_component = "0.99.0"
+entity_component = "1.0.0"
 ```
 
 Use it like so:
@@ -43,18 +51,16 @@ fn main() {
 }
 ```
 
-### Focks Team Information
-Maintainer: Jojolepro
+### Maintainer Information
 
-Contact: jojolepro [at] jojolepro [dot] com
-
-Commercial license available: yes
-
-[Focks Team Website](https://jojolepro.com/focks)
+* Maintainer: Jojolepro
+* Contact: jojolepro [at] jojolepro [dot] com
+* Website: [jojolepro.com](https://jojolepro.com)
+* Patreon: [patreon](https://patreon.com/jojolepro)
 
 ### Licence
-AGPL-3.0. You can buy commercial licenses [here](https://jojolepro.com/focks/).
 
-See full license in LICENSE file.
+CC0, public domain.
 
-Copyright (C) 2020 Jojolepro.
+TLDR: You can do whatever you want with it. Have fun!
+
