@@ -9,9 +9,9 @@ pub struct Entities {
     alive: BitSetVec,
     generation: Vec<u32>,
     killed: Vec<Entity>,
-    max_id: usize,
+    next_id: usize,
     /// helps to know if we should directly append after
-    /// max_id or if we should look through the bitset.
+    /// next_id or if we should look through the bitset.
     has_deleted: bool,
 }
 
@@ -21,7 +21,7 @@ impl Default for Entities {
             alive: create_bitset(),
             generation: vec![0u32; BITSET_SIZE],
             killed: vec![],
-            max_id: 0,
+            next_id: 0,
             has_deleted: false,
         }
     }
@@ -33,8 +33,8 @@ impl Entities {
     /// the killed entities.
     pub fn create(&mut self) -> Entity {
         if !self.has_deleted {
-            let i = self.max_id;
-            self.max_id += 1;
+            let i = self.next_id;
+            self.next_id += 1;
             self.alive.bit_set(i);
             Entity::new(i as u32, self.generation[i])
         } else {
@@ -51,8 +51,8 @@ impl Entities {
                 i += 1;
             }
             self.alive.bit_set(i);
-            if i >= self.max_id {
-                self.max_id = i + 1;
+            if i >= self.next_id {
+                self.next_id = i + 1;
                 self.has_deleted = false;
             }
             Entity::new(i as u32, self.generation[i])
@@ -92,7 +92,7 @@ impl Entities {
     pub fn iter_with_bitset<'a>(&'a self, bitset: std::rc::Rc<BitSetVec>) -> EntityIterator<'a> {
         EntityIterator {
             current_id: 0,
-            max_id: self.max_id,
+            next_id: self.next_id,
             entities: &self.alive,
             generations: &self.generation,
             bitset,
