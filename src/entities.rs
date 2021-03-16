@@ -1,4 +1,6 @@
-use crate::{Entity, BitSetVec, create_bitset, BitSet, BITSET_SLICE_COUNT, BITSET_SIZE, EntityIterator};
+use crate::{
+    create_bitset, BitSet, BitSetVec, Entity, EntityIterator, BITSET_SIZE, BITSET_SLICE_COUNT,
+};
 
 /// Holds a list of alive entities.
 /// It also holds a list of entities that were recently killed, which allows
@@ -50,7 +52,7 @@ impl Entities {
             }
             self.alive.bit_set(i);
             if i >= self.max_id {
-                self.max_id = i;
+                self.max_id = i + 1;
                 self.has_deleted = false;
             }
             Entity::new(i as u32, self.generation[i])
@@ -128,5 +130,27 @@ mod tests {
         entities.clear_killed();
         assert_eq!(*entities.killed(), vec![]);
     }
-}
 
+    #[test]
+    fn test_interleaved_create_kill() {
+        let mut entities = Entities::default();
+
+        let e1 = entities.create();
+        assert_eq!(e1.index(), 0);
+        let e2 = entities.create();
+        assert_eq!(e2.index(), 1);
+        entities.kill(e1);
+        entities.kill(e2);
+        assert_eq!(entities.is_alive(e1), false);
+        assert_eq!(entities.is_alive(e2), false);
+
+        let e3 = entities.create();
+        assert_eq!(e3.index(), 2);
+        let e4 = entities.create();
+        assert_eq!(e4.index(), 3);
+        entities.kill(e3);
+        entities.kill(e4);
+        assert_eq!(entities.is_alive(e3), false);
+        assert_eq!(entities.is_alive(e4), false);
+    }
+}
