@@ -1,4 +1,6 @@
-use crate::{Entity, BitSetVec, create_bitset, BitSet, BITSET_SLICE_COUNT, BITSET_SIZE, EntityIterator};
+use crate::{
+    create_bitset, BitSet, BitSetVec, Entity, EntityIterator, BITSET_SIZE, BITSET_SLICE_COUNT,
+};
 
 /// Holds a list of alive entities.
 /// It also holds a list of entities that were recently killed, which allows
@@ -7,9 +9,9 @@ pub struct Entities {
     alive: BitSetVec,
     generation: Vec<u32>,
     killed: Vec<Entity>,
-    max_id: usize,
+    next_id: usize,
     /// helps to know if we should directly append after
-    /// max_id or if we should look through the bitset.
+    /// next_id or if we should look through the bitset.
     has_deleted: bool,
 }
 
@@ -19,7 +21,7 @@ impl Default for Entities {
             alive: create_bitset(),
             generation: vec![0u32; BITSET_SIZE],
             killed: vec![],
-            max_id: 0,
+            next_id: 0,
             has_deleted: false,
         }
     }
@@ -31,8 +33,8 @@ impl Entities {
     /// the killed entities.
     pub fn create(&mut self) -> Entity {
         if !self.has_deleted {
-            let i = self.max_id;
-            self.max_id += 1;
+            let i = self.next_id;
+            self.next_id += 1;
             self.alive.bit_set(i);
             Entity::new(i as u32, self.generation[i])
         } else {
@@ -49,8 +51,8 @@ impl Entities {
                 i += 1;
             }
             self.alive.bit_set(i);
-            if i >= self.max_id {
-                self.max_id = i;
+            if i >= self.next_id {
+                self.next_id = i + 1;
                 self.has_deleted = false;
             }
             Entity::new(i as u32, self.generation[i])
@@ -90,7 +92,7 @@ impl Entities {
     pub fn iter_with_bitset<'a>(&'a self, bitset: std::rc::Rc<BitSetVec>) -> EntityIterator<'a> {
         EntityIterator {
             current_id: 0,
-            max_id: self.max_id,
+            next_id: self.next_id,
             entities: &self.alive,
             generations: &self.generation,
             bitset,
@@ -128,5 +130,27 @@ mod tests {
         entities.clear_killed();
         assert_eq!(*entities.killed(), vec![]);
     }
-}
 
+    #[test]
+    fn test_interleaved_create_kill() {
+        let mut entities = Entities::default();
+
+        let e1 = entities.create();
+        assert_eq!(e1.index(), 0);
+        let e2 = entities.create();
+        assert_eq!(e2.index(), 1);
+        entities.kill(e1);
+        entities.kill(e2);
+        assert_eq!(entities.is_alive(e1), false);
+        assert_eq!(entities.is_alive(e2), false);
+
+        let e3 = entities.create();
+        assert_eq!(e3.index(), 2);
+        let e4 = entities.create();
+        assert_eq!(e4.index(), 3);
+        entities.kill(e3);
+        entities.kill(e4);
+        assert_eq!(entities.is_alive(e3), false);
+        assert_eq!(entities.is_alive(e4), false);
+    }
+}

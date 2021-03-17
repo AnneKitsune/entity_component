@@ -1,9 +1,9 @@
-use crate::{BitSetVec, Entity, BitSet};
+use crate::{BitSet, BitSetVec, Entity};
 
 /// Iterator over entities using the provided bitset.
 pub struct EntityIterator<'a> {
     pub(crate) current_id: usize,
-    pub(crate) max_id: usize,
+    pub(crate) next_id: usize,
     pub(crate) entities: &'a BitSetVec,
     pub(crate) generations: &'a Vec<u32>,
     //pub(crate) bitset: &'a BitSetVec,
@@ -13,10 +13,10 @@ pub struct EntityIterator<'a> {
 impl<'a> Iterator for EntityIterator<'a> {
     type Item = Option<Entity>;
     fn next(&mut self) -> Option<Self::Item> {
-        while !self.bitset.bit_test(self.current_id) && self.current_id <= self.max_id {
+        while !self.bitset.bit_test(self.current_id) && self.current_id < self.next_id {
             self.current_id += 1;
         }
-        let ret = if self.current_id <= self.max_id {
+        let ret = if self.current_id < self.next_id {
             if self.entities.bit_test(self.current_id) {
                 Some(Some(Entity::new(
                     self.current_id as u32,
