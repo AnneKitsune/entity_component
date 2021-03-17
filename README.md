@@ -1,3 +1,7 @@
+Support an Open Source Developer! :hearts:  
+
+[![Become a patron](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/jojolepro)
+
 # Entity Component
 The entity-component part of a full ECS (Entity-Component-System).
 
@@ -12,7 +16,7 @@ The entity-component part of a full ECS (Entity-Component-System).
 # Usage
 Add the following to you Cargo.toml file:
 ```
-entity_component = "1.0.0"
+entity_component = "*"
 ```
 
 Use it like so:
