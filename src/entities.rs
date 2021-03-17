@@ -42,7 +42,7 @@ impl Entities {
             // Find section where at least one bit isn't set
             while self.alive[section].bit_all() {
                 section += 1;
-                if section > BITSET_SLICE_COUNT {
+                if section >= BITSET_SLICE_COUNT {
                     panic!("Exceeded maximum amount of concurrent entities.");
                 }
             }
