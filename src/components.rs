@@ -3,11 +3,11 @@ use crate::{create_bitset, Entity, BitSetVec, BitSet, ComponentIterator, Compone
 use std::collections::HashMap;
 use std::any::{TypeId, Any};
 use std::sync::Mutex;
-use std::cell::RefMut;
+use atomic_refcell_try::AtomicRefMut;
 
 lazy_static::lazy_static! {
     #[doc(hidden)]
-    pub static ref COMPONENT_REGISTRY: Mutex<HashMap<TypeId, Box<dyn Fn(RefMut<dyn Any+'static>, &[Entity]) + Send + Sync>>> = Mutex::new(HashMap::default());
+    pub static ref COMPONENT_REGISTRY: Mutex<HashMap<TypeId, Box<dyn Fn(AtomicRefMut<dyn Any+'static>, &[Entity]) + Send + Sync>>> = Mutex::new(HashMap::default());
 }
 
 /// Holds components of a given type indexed by `Entity`.
@@ -24,7 +24,7 @@ impl<T: 'static> Default for Components<T> {
         // place. This seems to be the best way of doing it that doesn't involve
         // heavily modifying how the `world_dispatcher` crate works.
         COMPONENT_REGISTRY.lock().unwrap().insert(TypeId::of::<Self>(), Box::new(|any, entities| {
-            let mut me = RefMut::map(any, |j| j.downcast_mut::<Self>().unwrap());
+            let mut me = AtomicRefMut::map(any, |j| j.downcast_mut::<Self>().unwrap());
             for e in entities {
                 me.remove(*e);
             }
