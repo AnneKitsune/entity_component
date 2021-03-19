@@ -44,6 +44,8 @@ impl<'a, T> Iterator for ComponentIteratorMut<'a, T> {
             self.current_id += 1;
         }
         let ret = if self.current_id < self.max_id {
+            // Unsafe: Used to tell the compiler that we won't mutably borrow the
+            // same element from storage twice.
             let r = self.storage[self.current_id].as_mut().map(|e| unsafe {
                 let ptr: *mut T = e;
                 &mut *ptr
