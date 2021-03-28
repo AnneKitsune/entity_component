@@ -8,7 +8,6 @@ The entity-component part of a full ECS (Entity-Component-System).
 # Why would you use this ECS library?
 
 * Compatible with all platforms, including WASM!
-* Public domain licensing: CC0
 * Minimal amount of dependencies.
 * Small code size.
 * Stable, tested, benchmarked, 100% completed.
